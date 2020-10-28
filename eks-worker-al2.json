@@ -74,7 +74,6 @@
       ],
       "ssh_username": "{{user `ssh_username`}}",
       "ssh_interface": "{{user `ssh_interface`}}",
-      "temporary_security_group_source_cidrs": "{{user `temporary_security_group_source_cidrs`}}",
       "security_group_id": "{{user `security_group_id`}}",
       "associate_public_ip_address": "{{user `associate_public_ip_address`}}",
       "ssh_pty": true,
@@ -90,7 +89,11 @@
           "docker_version": "{{ user `docker_version`}}",
           "source_ami_id": "{{ user `source_ami_id`}}",
           "kubernetes": "{{ user `kubernetes_version`}}/{{ user `kubernetes_build_date` }}/bin/linux/{{ user `arch` }}",
-          "cni_plugin_version": "{{ user `cni_plugin_version`}}"
+          "cni_plugin_version": "{{ user `cni_plugin_version`}}",
+          "Customer": "vidiemme",
+          "Project": "eks",
+          "Env": "nonprod",
+          "Owner": "awsdevops@vidiemme.it"
       },
       "ami_name": "{{user `ami_name`}}",
       "ami_description": "{{ user `ami_description` }}, (k8s: {{ user `kubernetes_version`}}, docker:{{ user `docker_version`}})"

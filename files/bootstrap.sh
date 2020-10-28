@@ -97,7 +97,7 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 CLUSTER_NAME="$1"
 set -u
 
-USE_MAX_PODS="${USE_MAX_PODS:-true}"
+USE_MAX_PODS="false"
 B64_CLUSTER_CA="${B64_CLUSTER_CA:-}"
 APISERVER_ENDPOINT="${APISERVER_ENDPOINT:-}"
 SERVICE_IPV4_CIDR="${SERVICE_IPV4_CIDR:-}"
@@ -339,6 +339,35 @@ if [[ "$ENABLE_DOCKER_BRIDGE" = "true" ]]; then
     systemctl restart docker
 fi
 
+################################################################################
+### CUSTOMIZATIONS #############################################################
+################################################################################
+# sudo rm /etc/cni/net.d/10-aws.conflist || true
+
+# # flush iptables nat, mangle, filter tables to clear any iptables configurations done by amazon-vpc-cni-k8s
+sudo iptables -t nat -F
+sudo iptables -t mangle -F
+sudo iptables -F
+sudo iptables -X
+
+sudo mkdir -p /opt/cni/bin
+sudo mkdir -p /etc/cni/net.d
+
+sudo curl -L git.io/weave -o /usr/local/bin/weave
+sudo chmod a+x /usr/local/bin/weave
+
+weave setup
+
+# iSCSI installation
+sudo yum install iscsi-initiator-utils -y
+sudo systemctl enable --now iscsid
+
+################################################################################
+### END CUSTOMIZATIONS #########################################################
+################################################################################
+
 systemctl daemon-reload
 systemctl enable kubelet
 systemctl start kubelet
+
+
